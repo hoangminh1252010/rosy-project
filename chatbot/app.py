@@ -1,6 +1,7 @@
 import logging
 import os
 from pathlib import Path
+from typing import Optional
 
 import httpx
 from dotenv import load_dotenv
@@ -8,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from rag_engine import build_rag_chain
+from rag_engine import build_general_chain, build_rag_chain
 
 load_dotenv()
 
@@ -43,14 +44,13 @@ class ChatRequest(BaseModel):
     session_id: str
     message: str
 
-
 class ChatResponse(BaseModel):
     reply: str
     mode: str = "chat"
     lead_saved: bool = False
 
-
 rag_chain = None
+general_chain = None
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +73,6 @@ def save_lead_to_mongodb(session_id: str, message: str) -> bool:
     except Exception:
         return False
 
-
 def wants_quote(text: str) -> bool:
     low = text.lower()
     keys = ("báo giá", "bao gia", "báo gía", "bao giá", "quote", "pricing", "estimate")
@@ -94,7 +93,6 @@ _CANNED_QUOTE_SAVE_FAILED = (
     "Bạn vui lòng thử lại sau hoặc liên hệ Rosysoft trực tiếp nhé."
 )
 
-
 def is_quote_focused_message(text: str) -> bool:
     """True nếu khách chỉ/chủ yếu nhắc báo giá (không phải đoạn dài hỏi kỹ thuật kèm báo giá)."""
     if not wants_quote(text):
@@ -111,6 +109,8 @@ def rag_sounds_like_no_answer(text: str) -> bool:
     needles = (
         "không biết",
         "không có thông tin",
+        "chưa có thông tin",
+        "theo tài liệu hiện có",
         "don't know",
         "do not know",
         "i don't know",
@@ -123,10 +123,28 @@ def rag_sounds_like_no_answer(text: str) -> bool:
     return any(n in low for n in needles)
 
 
+def invoke_general_chain(message: str) -> Optional[str]:
+    """Fallback gọi model general nếu RAG thiếu context."""
+    if general_chain is None:
+        return None
+    try:
+        answer = general_chain.invoke(message)
+        reply = answer.strip() if isinstance(answer, str) else str(answer)
+        return reply or None
+    except Exception:
+        logger.exception("General chain failed.")
+        return None
+
+
 @app.on_event("startup")
 def startup_event() -> None:
-    global rag_chain
+    global rag_chain, general_chain
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        general_chain = build_general_chain()
+    except Exception:
+        logger.exception("Không khởi tạo được general chain.")
+        general_chain = None
     try:
         rag_chain = build_rag_chain(str(DATA_DIR))
     except Exception:
@@ -139,7 +157,7 @@ def startup_event() -> None:
 
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
-    if rag_chain is None:
+    if rag_chain is None and general_chain is None:
         return ChatResponse(
             reply="Dịch vụ chat đang khởi động lại. Bạn thử lại sau ít phút nhé.",
             mode="error",
@@ -155,15 +173,32 @@ def chat(req: ChatRequest) -> ChatResponse:
         reply = _CANNED_QUOTE_OK if lead_saved else _CANNED_QUOTE_SAVE_FAILED
         return ChatResponse(reply=reply, mode=mode, lead_saved=lead_saved)
 
+    if rag_chain is None:
+        general_reply = invoke_general_chain(req.message)
+        if general_reply:
+            return ChatResponse(reply=general_reply, mode=mode, lead_saved=lead_saved)
+        return ChatResponse(
+            reply="Hiện hệ thống chưa xử lý được câu hỏi. Bạn thử lại sau hoặc để lại yêu cầu báo giá nhé.",
+            mode="error",
+        )
     try:
         answer = rag_chain.invoke(req.message)
     except Exception:
+        general_reply = invoke_general_chain(req.message)
+        if general_reply:
+            return ChatResponse(reply=general_reply, mode=mode, lead_saved=lead_saved)
         return ChatResponse(
             reply="Hiện hệ thống chưa xử lý được câu hỏi. Bạn thử lại sau hoặc để lại yêu cầu báo giá nhé.",
             mode="error",
         )
 
     reply = answer.strip() if isinstance(answer, str) else str(answer)
+
+    # Hybrid mode: khi RAG thiếu thông tin trong tài liệu, dùng general AI để trả lời.
+    if rag_sounds_like_no_answer(reply):
+        general_reply = invoke_general_chain(req.message)
+        if general_reply:
+            reply = general_reply
 
     if wants_quote(req.message):
         lead_saved = save_lead_to_mongodb(req.session_id, req.message)

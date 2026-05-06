@@ -14,12 +14,15 @@ _CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o-mini")
 
 
 def _build_fallback_chain():
-    """Khi chưa có PDF trong `data/`: trả lời bằng LLM + persona Rosysoft (không RAG)."""
+    """General fallback chain khi không có context tài liệu phù hợp."""
     prompt = ChatPromptTemplate.from_template(
-        """Bạn là trợ lý AI tiếng Việt trên website Rosysoft.
-Nhiệm vụ: chào hỏi lịch sự, giới thiệu ngắn gọn dịch vụ phần mềm/tư vấn công nghệ.
-Nếu khách cần giá hoặc báo giá, hãy nhắc họ có thể gõ "báo giá" để được ghi nhận.
-Giữ câu trả lời ngắn, rõ ràng. Không bịa chi tiết hợp đồng hoặc giá cụ thể.
+        """Bạn là trợ lý AI tiếng Việt, trả lời tự nhiên và trung lập.
+Nhiệm vụ:
+- Trả lời ngắn gọn, rõ ràng theo kiến thức chung.
+- KHÔNG tự giới thiệu Rosysoft hoặc chèn quảng bá nếu người dùng không hỏi về ROSY.
+- Chỉ nhắc Rosysoft khi câu hỏi liên quan trực tiếp đến ROSY/ERP ROSY/sản phẩm-dịch vụ ROSY.
+- Nếu người dùng hỏi giá/báo giá hoặc muốn tư vấn triển khai cho ROSY, nhắc họ có thể gõ "báo giá" để được ghi nhận.
+- Không bịa thông tin nội bộ, pháp lý, hợp đồng hoặc cam kết giá cụ thể.
 
 Câu hỏi: {question}"""
     )
@@ -31,6 +34,11 @@ Câu hỏi: {question}"""
         | StrOutputParser()
     )
     return chain
+
+
+def build_general_chain():
+    """Chain trả lời general AI (không dùng context tài liệu)."""
+    return _build_fallback_chain()
 
 
 def build_rag_chain(data_path: str = "./data"):
