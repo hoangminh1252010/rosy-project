@@ -1,0 +1,104 @@
+[
+    {
+      "question": ["ERP ROSY là gì?", "Phần mềm ERP ROSY dùng để làm gì?"],
+      "answer": "ERP ROSY là phần mềm quản trị tổng thể giúp doanh nghiệp quản lý tài chính, sản xuất và hoạt động nội bộ trên một hệ thống thống nhất.",
+      "type": "overview"
+    },
+    {
+      "question": ["ERP ROSY có chức năng gì?"],
+      "answer": "ERP ROSY hỗ trợ quản lý tài chính, sản xuất, nhân sự và các quy trình nội bộ trong doanh nghiệp.",
+      "type": "function"
+    },
+    {
+      "question": ["ERP ROSY có thể quản lý những bộ phận nào?"],
+      "answer": "Phần mềm có thể quản lý tài chính, kế toán, sản xuất, nhân sự và các phòng ban khác trong doanh nghiệp.",
+      "type": "function"
+    },
+    {
+      "question": ["ERP ROSY có dùng được online không?"],
+      "answer": "Người dùng có thể truy cập ERP ROSY qua internet để làm việc từ xa.",
+      "type": "feature"
+    },
+    {
+      "question": ["ERP ROSY có hỗ trợ đa người dùng không?"],
+      "answer": "Hệ thống cho phép nhiều người dùng truy cập đồng thời với phân quyền rõ ràng.",
+      "type": "feature"
+    },
+    {
+      "question": ["ERP ROSY có phân quyền không?"],
+      "answer": "Phần mềm hỗ trợ phân quyền chi tiết theo từng vai trò người dùng.",
+      "type": "security"
+    },
+    {
+      "question": ["ERP ROSY có bảo mật không?"],
+      "answer": "Hệ thống có cơ chế bảo mật và phân quyền giúp bảo vệ dữ liệu doanh nghiệp.",
+      "type": "security"
+    },
+    {
+      "question": ["ERP ROSY dùng công nghệ gì?"],
+      "answer": "ERP ROSY được xây dựng bằng .NET và sử dụng SQL Server.",
+      "type": "technology"
+    },
+    {
+      "question": ["ERP ROSY có thể import Excel không?"],
+      "answer": "Phần mềm hỗ trợ nhập dữ liệu từ Excel để tiết kiệm thời gian nhập liệu.",
+      "type": "feature"
+    },
+    {
+      "question": ["ERP ROSY có hỗ trợ đa ngôn ngữ không?"],
+      "answer": "Phần mềm hỗ trợ đa ngôn ngữ phục vụ doanh nghiệp quốc tế.",
+      "type": "feature"
+    },
+  
+    {
+      "question": ["ERP ROSY có lợi ích gì?"],
+      "answer": "Giúp doanh nghiệp giảm trùng lặp dữ liệu, tăng hiệu quả quản lý và ra quyết định nhanh hơn.",
+      "type": "benefit"
+    },
+    {
+      "question": ["ERP ROSY giúp gì cho doanh nghiệp?"],
+      "answer": "Phần mềm giúp đồng bộ dữ liệu và tối ưu quy trình làm việc.",
+      "type": "benefit"
+    },
+    {
+      "question": ["ERP ROSY có quản lý dữ liệu tập trung không?"],
+      "answer": "Hệ thống sử dụng cơ sở dữ liệu tập trung giúp liên thông thông tin giữa các phòng ban.",
+      "type": "data"
+    },
+    {
+      "question": ["ERP ROSY có dễ sử dụng không?"],
+      "answer": "Phần mềm có giao diện thân thiện và dễ sử dụng cho người dùng.",
+      "type": "ux"
+    },
+    {
+      "question": ["ERP ROSY có phù hợp doanh nghiệp nhỏ không?"],
+      "answer": "Phần mềm phù hợp với nhiều loại doanh nghiệp, bao gồm cả doanh nghiệp nhỏ và vừa.",
+      "type": "target"
+    },
+  
+    {
+      "question": ["ROSY là công ty gì?"],
+      "answer": "ROSY là công ty phần mềm cung cấp giải pháp quản lý doanh nghiệp.",
+      "type": "company"
+    },
+    {
+      "question": ["ROSY hoạt động trong lĩnh vực nào?"],
+      "answer": "ROSY hoạt động trong lĩnh vực phát triển phần mềm và giải pháp công nghệ.",
+      "type": "company"
+    },
+    {
+      "question": ["ROSY cung cấp sản phẩm gì?"],
+      "answer": "ROSY cung cấp phần mềm ERP và các hệ thống quản lý doanh nghiệp.",
+      "type": "product"
+    },
+    {
+      "question": ["ROSY có cung cấp dịch vụ không?"],
+      "answer": "Công ty cung cấp dịch vụ phát triển phần mềm và triển khai hệ thống.",
+      "type": "service"
+    },
+    {
+      "question": ["ROSY có hỗ trợ khách hàng không?"],
+      "answer": "ROSY cung cấp dịch vụ hỗ trợ, bảo trì và tư vấn cho khách hàng.",
+      "type": "service"
+    }
+  ]

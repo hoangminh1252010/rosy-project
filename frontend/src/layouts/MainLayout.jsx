@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/layout/Navbar";
-import Chatbot from "../components/layout/chatbot";
+import Chatbot from "../components/layout/Chatbot";
 
 export default function MainLayout() {
   return (

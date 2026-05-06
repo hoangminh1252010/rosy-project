@@ -4,4 +4,13 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    // Dev: gọi POST /api/chat cùng origin → proxy sang FastAPI (tránh CORS, dễ nhớ)
+    proxy: {
+      '/api/chat': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
+    },
+  },
 })
